@@ -4,8 +4,8 @@ type List interface {
 	Len() int
 	Front() *ListItem
 	Back() *ListItem
-	//PushFront(v interface{}) *ListItem
-	//PushBack(v interface{}) *ListItem
+	PushFront(v interface{}) *ListItem
+	PushBack(v interface{}) *ListItem
 	//Remove(i *ListItem)
 	//MoveToFront(i *ListItem)
 }
@@ -22,26 +22,46 @@ type list struct {
 	len   int
 }
 
-func NewList() List {
+func NewList() List { // возвращает объект с поведением List interface
 	return new(list)
 }
 
-func (l list) Len() int {
+func (l *list) Len() int {
 	return l.len
 }
 
-func (l list) Front() *ListItem {
+func (l *list) Front() *ListItem {
 	return l.front
 }
 
-func (l list) Back() *ListItem {
+func (l *list) Back() *ListItem {
 	return l.back
 }
 
-/*
-func (l list) PushFront(v interface{}) *ListItem {
-	newItem := ListItem{v, l.front, nil}
-	l.front = &newItem
+func (l *list) PushFront(v interface{}) *ListItem { // без указателя в рессивере l.len++ не работает!
+	var newItem ListItem
+	if l.Front() == nil {
+		newItem = ListItem{v, nil, nil}
+		l.back = &newItem
+		l.front = &newItem
+	} else {
+		newItem = ListItem{v, l.front, nil}
+		l.front = &newItem
+	}
+	l.len++
 	return l.front
 }
-*/
+
+func (l *list) PushBack(v interface{}) *ListItem {
+	var newItem ListItem
+	if l.Back() == nil {
+		newItem = ListItem{v, nil, nil}
+		l.back = &newItem
+		l.front = &newItem
+	} else {
+		newItem = ListItem{v, nil, l.back}
+		l.back = &newItem
+	}
+	l.len++
+	return l.back
+}
