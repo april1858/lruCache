@@ -6,8 +6,8 @@ type List interface {
 	Back() *ListItem
 	PushFront(v interface{}) *ListItem
 	PushBack(v interface{}) *ListItem
-	//Remove(i *ListItem)
-	//MoveToFront(i *ListItem)
+	Remove(i *ListItem)
+	MoveToFront(i *ListItem)
 }
 
 type ListItem struct {
@@ -46,6 +46,7 @@ func (l *list) PushFront(v interface{}) *ListItem { // без указателя
 		l.front = &newItem
 	} else {
 		newItem = ListItem{v, l.front, nil}
+		l.front.Prev = &newItem
 		l.front = &newItem
 	}
 	l.len++
@@ -60,8 +61,35 @@ func (l *list) PushBack(v interface{}) *ListItem {
 		l.front = &newItem
 	} else {
 		newItem = ListItem{v, nil, l.back}
+		l.back.Next = &newItem
 		l.back = &newItem
 	}
 	l.len++
 	return l.back
+}
+
+func (l *list) Remove(i *ListItem) {
+	for carrent := l.front; carrent != nil; {
+		if carrent == i {
+			carrent.Prev.Next = carrent.Next
+			carrent.Next.Prev = carrent.Prev
+			l.len--
+			return
+		}
+		carrent = carrent.Next
+	}
+}
+
+func (l *list) MoveToFront(i *ListItem) {
+	if i.Prev == nil {
+		return
+	}
+	if i.Next == nil {
+		i.Prev.Next = nil
+		l.back = i.Prev
+	} else {
+		i.Prev.Next = i.Next
+		i.Next.Prev = i.Prev
+	}
+	l.front = l.PushFront(i.Value)
 }
