@@ -49,3 +49,68 @@ func TestList(t *testing.T) {
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 	})
 }
+
+func TestPushFront(t *testing.T) {
+	l := NewList()
+
+	for _, v := range [3]int{7, 8, 9} {
+		l.PushFront(v)
+	}
+
+	answer := make([]int, 0, 3)
+	for i := l.Front(); i != nil; i = i.Next {
+		answer = append(answer, i.Value.(int))
+	}
+
+	require.Equal(t, []int{9, 8, 7}, answer)
+}
+
+func TestPushBack(t *testing.T) {
+	l := NewList()
+
+	for _, v := range [3]int{7, 8, 9} {
+		l.PushBack(v)
+	}
+
+	answer := make([]int, 0, 3)
+	for i := l.Front(); i != nil; i = i.Next {
+		answer = append(answer, i.Value.(int))
+	}
+
+	require.Equal(t, []int{7, 8, 9}, answer)
+}
+
+func TestRemove(t *testing.T) {
+	l := NewList()
+
+	for _, v := range [3]int{7, 8, 9} {
+		l.PushBack(v)
+	}
+
+	l.Remove(l.Back())
+
+	answer := make([]int, 0, 2)
+	for i := l.Front(); i != nil; i = i.Next {
+		answer = append(answer, i.Value.(int))
+	}
+
+	require.Equal(t, []int{7, 8}, answer)
+}
+
+func TestMoveToFront(t *testing.T) {
+	l := NewList()
+
+	for _, v := range [3]int{7, 8, 9} {
+		l.PushBack(v)
+	}
+
+	l.MoveToFront(l.Back().Prev)
+	l.MoveToFront(l.Back())
+
+	answer := make([]int, 0, 3)
+	for i := l.Front(); i != nil; i = i.Next {
+		answer = append(answer, i.Value.(int))
+	}
+
+	require.Equal(t, []int{9, 8, 7}, answer)
+}
